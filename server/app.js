@@ -1,22 +1,14 @@
 import express from 'express'
+import AppController from './controller/App.js'
+import routes from './routes/index.js'
 
 const app = express()
 
-app.get('/', (req, res) => {
-  res.send('Ola s')
- })
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+app.use(routes)
 
-app.use((request, response, next) => {
-  var err = new Error('Not Found')
-  err.status = 404
-  next(err)
-})
+app.use(AppController.notFound)
+app.use(AppController.handleError)
 
-app.use((err, request, response, next) => {
-  if (err.status !== 404) console.log(err.stack)
-  response.status(err.status || 500).json({ err: err.message })
-})
-
-app.listen(3000)
-
-// pagina 157
+export default app
